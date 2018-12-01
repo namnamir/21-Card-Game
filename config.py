@@ -11,10 +11,10 @@ class Messages:
 
     PLAYER_INPUT_TXT = '{}! How many players are going to play? '
     PLAYER_SUCCESS_TXT = '{} players are going to play 21.'
- 
+
     ACE_INPUT_TXT = '{}! What is the value of Ace; 1 or 11? '
     ACE_SUCCESS_TXT = 'Ace will be assumed as {}. '\
-                    'You can change it later.'
+                      'You can change it later.'
     ACE_ERROR_TXT = 'Ace can be either 1 or 11. '\
                     '{} is none of them.\nPlease enter 1 or 11.'
 
@@ -28,6 +28,6 @@ class Messages:
     CHOICE_BET_TXT = '{}! Do you like to increase your bet? (Y/N) '
     CHOICE_ERROR_TXT = 'You need to choose among the options: {}; '\
                        'it is not case-sensitive.'
-   
+
     BUSTED_TXT = '{}! Oops, you brusted and unfortunately lost {}.'
     WON_TXT = '{}! Congrats, you won {}.'

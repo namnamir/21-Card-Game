@@ -19,12 +19,14 @@ ranks = {'Two': 2,
          'Queen': config.Default.QUEEN_VALUE,
          'King': config.Default.KING_VALUE,
          'Ace': config.Default.ACE_VALUE
-        }
+         }
 suits = ['Spade', 'Heart', 'Diamond', 'Club']
+
 
 # make a deck by the defined ranks and suits in a tuple of (rank, suit)
 def make_deck():
     return [[rank, suit] for rank in list(ranks.keys()) for suit in suits]
+
 
 deck = []
 # find the number of deck needed; max 3 players for each deck

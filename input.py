@@ -1,4 +1,5 @@
-def get_number(Flag, player_name, input_text, success_text, error_text1, error_text2, previous_bet):
+def get_number(Flag, player_name, input_text, success_text, error_text1,
+               error_text2, previous_bet):
     while True:
         try:
             # get the input from the user
@@ -39,6 +40,7 @@ def get_number(Flag, player_name, input_text, success_text, error_text1, error_t
                 print(error_text2.format(str(number)))
                 continue
 
+
 def get_text(player_name, input_text, error_text, array):
     while True:
         try:
@@ -56,4 +58,3 @@ def get_text(player_name, input_text, error_text, array):
         except ValueError:
                 print(error_text.format(str(array)))
                 continue
-        

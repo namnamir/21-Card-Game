@@ -9,6 +9,7 @@ play = {}
 
 status = ['Stand', 'Hit', 'Bust', 'Split']
 
+
 def bet(player_name, previous_bet):
     # define the messages; change them in config.py
     input_txt = config.Messages.BET_INPUT_TXT
@@ -16,17 +17,22 @@ def bet(player_name, previous_bet):
     error_msg1 = config.Messages.BET_ERROR_TXT1
     error_msg2 = config.Messages.ERROR_TXT
     # set the new bet
-    return get_number('Bet', player_name, input_txt, success_msg, error_msg1, error_msg2, previous_bet)
+    return get_number('Bet', player_name, input_txt, success_msg,
+                      error_msg1, error_msg2, previous_bet)
+
 
 # ask the desired value of Ace from the user
 def is_ace(player_name, player, key, ace_type):
-   if player[key][0][0] == ace_type:
+    if player[key][0][0] == ace_type:
         input_txt = config.Messages.ACE_INPUT_TXT
         success_msg = config.Messages.ACE_SUCCESS_TXT
         error_msg1 = config.Messages.ACE_ERROR_TXT
         error_msg2 = config.Messages.ERROR_TXT
         bet = 0
-        player[key][0][0] = get_number('Ace', player_name, input_txt, success_msg, error_msg1, error_msg2, bet)
+        player[key][0][0] = get_number('Ace', player_name, input_txt,
+                                       success_msg, error_msg1, error_msg2,
+                                       bet)
+
 
 # sum up the value of cards
 def sum_up(player_name, player):
@@ -36,6 +42,7 @@ def sum_up(player_name, player):
             continue
         sum_value += deck.ranks[player[key][0][0]]
     return sum_value
+
 
 # get the second, third and more card for each player
 def play_game(player, j, Flag):
@@ -49,8 +56,8 @@ def play_game(player, j, Flag):
         print(j, Flag, play[player])
 
         print('\n ********************* p: {} ******* j: {}'.format(player, j))
-        print('\nplay_init:\n',play[player])
- 
+        print('\nplay_init:\n', play[player])
+
         # initiate the round
         play[player][j] = [None, 0, None]
 
@@ -67,7 +74,8 @@ def play_game(player, j, Flag):
             # ask the user if she wants to split
             input_txt = config.Messages.CHOICE_TYPE_TXT2
             error_msg = config.Messages.CHOICE_ERROR_TXT
-            answer = get_text(player, input_txt, error_msg, ['y', 'yes', 'n', 'no'])
+            answer = get_text(player, input_txt, error_msg,
+                              ['y', 'yes', 'n', 'no'])
             # create two hands for the player and remove the old one
             if answer.lower() in ['y', 'yes']:
 
@@ -87,7 +95,8 @@ def play_game(player, j, Flag):
                 play.pop(player)
 
                 """ update the list of names
-                    it doesn't remove the old name from the list, it will be removed later in the calling loop.
+                    it doesn't remove the old name from the list,
+                    it will be removed later in the calling loop.
                 """
                 k = players.players_name.index(player)
                 players.players_name.insert(k + 1, player + '__1')
@@ -103,7 +112,6 @@ def play_game(player, j, Flag):
             play[player][j][1] = play[player][j-1][1]
             print(config.Messages.WON_TXT.format(player, play[player][j-1][1]))
             break
-
 
         """if it's Dealer's turn, there are some rules:
            The Dealer must hit when it has a total of 16 points or less
@@ -122,21 +130,23 @@ def play_game(player, j, Flag):
             play[player][j][2] = 'Hit'
             continue
         elif j >= 2:
-           # increase the bet; if the player wants
+            # increase the bet; if the player wants
             input_txt = config.Messages.CHOICE_BET_TXT
             error_msg = config.Messages.CHOICE_ERROR_TXT
-            answer = get_text(player, input_txt, error_msg, ['y', 'yes', 'n', 'no'])
+            answer = get_text(player, input_txt, error_msg,
+                              ['y', 'yes', 'n', 'no'])
 
             if answer.lower() in ['y', 'yes']:
                 play[player][j][1] = bet(player, play[player][j][1])
             # if there is no increase, it will keep the previous bet
             else:
-                play[player][j][1] = play[player][j][1] 
+                play[player][j][1] = play[player][j][1]
 
             # ask the user if she wants to hit or stand
             input_txt = config.Messages.CHOICE_TYPE_TXT1
             error_msg = config.Messages.CHOICE_ERROR_TXT
-            answer = get_text(player, input_txt, error_msg, ['h', 'hit', 's', 'stand'])
+            answer = get_text(player, input_txt, error_msg,
+                              ['h', 'hit', 's', 'stand'])
 
             if answer.lower() in ['h', 'hit']:
                 play[player][j][2] = 'Hit'
@@ -148,7 +158,7 @@ def play_game(player, j, Flag):
         # check if the hand is busted
         if play[player]['sum'] > 21:
             # check if the player likes to change the value of Aces
-            print('\n########## sum > 21 #####',play[player]['sum'])
+            print('\n########## sum > 21 #####', play[player]['sum'])
             for z in range(0, len(play[player])):
                 item = play[player][z][0][0]
                 if item in ['Ace', 'Ace1', 'Ace11']:
@@ -158,7 +168,8 @@ def play_game(player, j, Flag):
             # update the bet of the new round as the previous one
             play[player][j][1] = play[player][j-1][1]
             play[player][j][2] = 'Bust'
-            print(config.Messages.BUSTED_TXT.format(player, play[player][j][1]))
+            print(config.Messages.BUSTED_TXT.format(player,
+                                                    play[player][j][1]))
             break
 
         j += 1
@@ -166,10 +177,6 @@ def play_game(player, j, Flag):
     print('\nplay_full_hand:\n',play)
     print('\n\n====================================================\n\n')
 
-# if any(s > 21 for s in play[players.players_name[i]]['sum'] for i in range(1, len(players.players_name))):
-#     print('no')
-# else:
-#     print('yes')
 
 deck.deck = [['Two', 'Club'], ['Two', 'Heart'], ['Two', 'Spade'], ['Ace', 'Heart'], ['Ace', 'Diamond'], ['Ace', 'Club'], ['Ace', 'Spade'], ['Two', 'Diamond'], ['Ten', 'Heart'], ['Ten', 'Diamond'], ['Ten', 'Club'], ['Ten', 'Spade']]
 print(deck.deck)
@@ -186,13 +193,7 @@ for i in range(1, len(players.players_name)):
     player = players.players_name[i]
     play[player][1][1] = bet(player, 0)
 
-print('\n\n============= First Hand ==============\n',play)
-
-# results = {}
-# for i in range(1, len(players.players_name)):
-#     if players.players_name[i][-3:-1] != '__':
-#         player = players.players_name[i]
-#         play_game(player, 2, 'init')
+print('\n\n============= First Hand ==============\n', play)
 
 temp = players.players_name.copy()
 temp.remove('Dealer')
@@ -213,15 +214,7 @@ results = {}
 for item in players.players_name:
     results[item] = play[item]['sum']
 
-# print('\n\n============= Second Hand ==============\n',play)
-
-# for i in range(1, len(players.players_name)):
-#     player = players.players_name[i]
-#     play_game(player, 2, 'play')
-#     results[player] = play[player]['sum']
-
-print('\n\n============= Last Hand ==============\n',play)
-
+print('\n\n============= Last Hand ==============\n', play)
 
 
 """ sort the list based on the values and checks if any is less than 21.
@@ -229,7 +222,6 @@ print('\n\n============= Last Hand ==============\n',play)
 """
 names = players.players_name
 if any(play[names[i]]['sum'] <= 21 for i in range(1, len(names))):
-    print('\n\n\nYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY\n\n')
     play_game('Dealer', 2, 'play')
     results['Dealer'] = play['Dealer']['sum']
 
