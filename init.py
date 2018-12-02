@@ -3,6 +3,8 @@ import players
 from input import get_text as get_text
 from input import get_number as get_number
 import config
+from colored import fg, bg, attr
+from terminaltables import SingleTable
 
 
 play = {}
@@ -10,6 +12,15 @@ play = {}
 status = ['Stand', 'Hit', 'Bust', 'Split']
 
 
+# print the hand
+def print_hand(player, Flag):
+    for i in range(1, sorted(play[player].keys())[-1] + 1):
+        deck.print_card(play[player][i][0], 'Print')
+    if Flag == 'Print_Sum':
+        deck.print_sum(play[player][0])
+
+
+# update the bet
 def bet(player_name, previous_bet):
     # define the messages; change them in config.py
     input_txt = config.Messages.BET_INPUT_TXT
@@ -17,8 +28,8 @@ def bet(player_name, previous_bet):
     error_msg1 = config.Messages.BET_ERROR_TXT1
     error_msg2 = config.Messages.ERROR_TXT
     # set the new bet
-    return get_number('Bet', player_name, input_txt, success_msg,
-                      error_msg1, error_msg2, previous_bet)
+    return get_number('Bet', player_name, input_txt, success_msg, error_msg1,
+                      error_msg2, previous_bet)
 
 
 # ask the desired value of Ace from the user
@@ -32,43 +43,141 @@ def is_ace(player_name, player, key, ace_type):
         player[key][0][0] = get_number('Ace', player_name, input_txt,
                                        success_msg, error_msg1, error_msg2,
                                        bet)
+        player[0] = sum_up(player_name, player)
+
+    # # print the hand after defining the value of the Ace
+    # print(config.Messages.CARD_DETAILS_TXT4.format(fg(3), bg(234), player,
+    #                                                attr(0)))
+    # for i in range(1, sorted(player.keys())[-1] + 1):
+    #     deck.print_card(player[i][0])
+    # deck.print_sum(player[0])
+    # print(player)
 
 
 # sum up the value of cards
 def sum_up(player_name, player):
     sum_value = 0
     for key in list(player.keys()):
-        if key == 'sum':
+        if key == 0:
             continue
         sum_value += deck.ranks[player[key][0][0]]
     return sum_value
 
 
+# define the winner and print the final table
+def print_statistics(player, Flag):
+    table = [['Player Name', 'Cards', 'Sum', 'Bet', 'Status']]
+    temp2 = {}  # for collecting sums
+    temp3 = []  # for collecting equal sums
+    equal_val = 0
+
+    for name in player:
+        temp1 = []  # for forming rows of the table
+        last_card = sorted(play[name].keys())[-1]
+        a = ''
+
+        # set a dic {name:sum} to find the winner
+        temp2[name] = play[name][0]
+
+        temp1.append(name)  # name
+        for x in range(1, last_card + 1):
+            a += deck.print_card(play[name][x][0], None)
+            if x < last_card:
+                a += ' - '
+        temp1.append(a)  # hand
+        temp1.append(play[name][0])  # sum
+        temp1.append(play[name][last_card][1])  # bet
+        if temp1[2] > 21:  # status
+            temp1.append('Busted')  # status
+        elif temp1[2] == 21:
+            temp1.append('Won')  # status
+        else:
+            temp1.append('Lost')  # status
+        table.append(temp1)
+
+    # set the statuses in case all are busted before the Dealer start playing
+    if Flag == 'All_Busted':
+        table[1][1] = '-'
+        table[1][2] = '-'
+        table[1][4] = 'Won'
+        print(config.Messages.ALL_BUSTED_TXT.format(fg(3), bg(234), attr(0)))
+
+    else:
+        # sort descendingly the results and remove the busted players
+        temp2 = list(reversed(sorted(temp2.items(), key=lambda x: x[1])))
+        for i in range(0, len(temp2)):
+            if temp2[i][1] > 21:
+                temp2.pop(i)
+                continue
+            # if 2 or more players have the same sum
+            try:
+                # to be sure that the last item is taken into account
+                if i == len(temp2) - 1 and temp2[i][1] == equal_val:
+                    temp3.append(temp2[i][0])
+                # if first items (>= 2) are eqals
+                elif i < len(temp2) and temp2[i][1] == temp2[i+1][1]:
+                    temp3.append(temp2[i][0])
+                    equal_val = temp2[i][1]
+            except IndexError:
+                pass
+
+        # if the Dealer and others have the highest score the Dealer wins
+        if temp2[0][0] and 'Dealer' in temp3:
+            for item in table:
+                if item[0] in temp3:
+                    if item[0] != 'Dealer':
+                        item[4] = 'Lost'
+                    else:
+                        item[4] = 'Won'
+            print(config.Messages.WON_TXT2.format(attr(5), fg(15), bg(160),
+                                                  'Dealer', attr(0)))
+        # if more than one wins, change the status of all to 'Won'
+        elif temp2[0][0] in temp3 and len(temp3) > 1:
+            for name in temp3:
+                for row in table:
+                    if row[0] == name:
+                        row[4] = 'Won'
+                        print(config.Messages.WON_TXT3.format(attr(5), fg(15),
+                                                              bg(160), name,
+                                                              attr(0)))
+                        break
+        # if none of the above, the winner is the first member of temp2
+        else:
+            for row in table:
+                if row[0] == temp2[0][0]:
+                    row[4] = 'Won'
+                    break
+            print(config.Messages.WON_TXT2.format(attr(5), fg(15), bg(160),
+                                                  temp2[0][0], attr(0)))
+
+    # print the statisctics
+    table = SingleTable(table)
+    print(table.table)
+
+
 # get the second, third and more card for each player
 def play_game(player, j, Flag):
-    play[player]['sum'] = sum_up(player, play[player])
-    while play[player]['sum'] <= 21 and \
-          play[player][j-1][2] == 'Hit':
-
-        if Flag == 'init' and j > 2:
-            break
-
-        print(j, Flag, play[player])
-
-        print('\n ********************* p: {} ******* j: {}'.format(player, j))
-        print('\nplay_init:\n', play[player])
+    play[player][0] = sum_up(player, play[player])
+    while play[player][0] <= 21 and play[player][j-1][2] == 'Hit':
 
         # initiate the round
         play[player][j] = [None, 0, None]
 
         # get a new card
         play[player][j][0] = deck.deck.pop()
-        print('\n\n::::::::::::::::::>>> ', play[player][j][0])
+
+        # print the new card and check if it is the ace or not
+        print(config.Messages.CARD_DETAILS_TXT2.format(fg(3), bg(234),
+                                                       player, j, attr(0)))
+        deck.print_card(play[player][j][0], 'Print')
         is_ace(player, play[player], j, 'Ace')
 
-        # checks if split is eligible
-        if j == 2 and \
-           player[-3:-1] != '__' and \
+        """ check if split is eligible
+            if it is exactly the scond hand && the last to chars before the
+            last one of the name of the palyer is not __ && the palayer is the
+            Dealer && two first cards have the same value
+        """
+        if j == 2 and player[-3:-1] != '__' and player != 'Dealer' and \
            play[player][1][0][0] == play[player][2][0][0]:
 
             # ask the user if she wants to split
@@ -88,8 +197,8 @@ def play_game(player, j, Flag):
                 play[player + '__2'][1][0] = play[player][1][0]
 
                 # update sum
-                play[player + '__1']['sum'] = int(play[player]['sum'] / 2)
-                play[player + '__2']['sum'] = int(play[player]['sum'] / 2)
+                play[player + '__1'][0] = int(play[player][0] / 2)
+                play[player + '__2'][0] = int(play[player][0] / 2)
 
                 # delete the old hand
                 play.pop(player)
@@ -103,142 +212,150 @@ def play_game(player, j, Flag):
                 players.players_name.insert(k + 2, player + '__2')
                 break
 
-        # check if the hand is 21
-        play[player]['sum'] = sum_up(player, play[player])
-        if play[player]['sum'] == 21:
-            print('---SUM---: ', play[player]['sum'])
-
-            # update the bet of the new round as the previous one
-            play[player][j][1] = play[player][j-1][1]
-            print(config.Messages.WON_TXT.format(player, play[player][j-1][1]))
-            break
-
         """if it's Dealer's turn, there are some rules:
            The Dealer must hit when it has a total of 16 points or less
            and must stand with a total of 17 points or more.
         """
-        play['Dealer']['sum'] = sum_up('Dealer', play['Dealer'])
-        if player == 'Dealer' and play['Dealer']['sum'] <= 16:
+        play['Dealer'][0] = sum_up('Dealer', play['Dealer'])
+        if player == 'Dealer' and play['Dealer'][0] <= 16:
             play[player][j][2] = 'Hit'
+            j += 1
             continue
-        elif player == 'Dealer' and play['Dealer']['sum'] >= 17:
-            play[player][j][2] = 'Stand'
+        elif player == 'Dealer' and play['Dealer'][0] >= 17:
+            if play['Dealer'][0] == 21:
+                play[player][j][2] = 'Won'
+            elif play['Dealer'][0] > 21:
+                play[player][j][2] = 'Busted'
+            else:
+                play[player][j][2] = 'Stand'
+            break
+
+        # check if the hand is 21
+        play[player][0] = sum_up(player, play[player])
+        if play[player][0] == 21:
+            # update the bet of the new round as the previous one
+            play[player][j][1] = play[player][j-1][1]
+            print(config.Messages.WON_TXT1.format(attr(5), fg(15), bg(160),
+                                                  player,
+                                                  play[player][j-1][1],
+                                                  attr(0)))
             break
 
         # if the player is not the Dealer
-        if j == 1:
-            play[player][j][2] = 'Hit'
-            continue
-        elif j >= 2:
-            # increase the bet; if the player wants
+        if j >= 2 and play[player][0] < 21:
+            # ask the player if she wants to increase the bet
             input_txt = config.Messages.CHOICE_BET_TXT
             error_msg = config.Messages.CHOICE_ERROR_TXT
             answer = get_text(player, input_txt, error_msg,
                               ['y', 'yes', 'n', 'no'])
-
             if answer.lower() in ['y', 'yes']:
-                play[player][j][1] = bet(player, play[player][j][1])
-            # if there is no increase, it will keep the previous bet
-            else:
-                play[player][j][1] = play[player][j][1]
+                play[player][j][1] = bet(player, play[player][j-1][1])
+                bet_flag = 'Increased'  # the bet is increased
 
-            # ask the user if she wants to hit or stand
+            # ask the player if she wants to hit or stand
             input_txt = config.Messages.CHOICE_TYPE_TXT1
             error_msg = config.Messages.CHOICE_ERROR_TXT
             answer = get_text(player, input_txt, error_msg,
                               ['h', 'hit', 's', 'stand'])
-
             if answer.lower() in ['h', 'hit']:
                 play[player][j][2] = 'Hit'
+                j += 1
                 continue
             else:
                 play[player][j][2] = 'Stand'
                 break
+            """update the bet of the new round as the previous one if
+               it is not already increased by the player
+            """
+            if bet_flag != 'Increased':
+                play[player][j][1] = play[player][j-1][1]
 
         # check if the hand is busted
-        if play[player]['sum'] > 21:
+        elif play[player][0] > 21:
+
             # check if the player likes to change the value of Aces
-            print('\n########## sum > 21 #####', play[player]['sum'])
-            for z in range(0, len(play[player])):
+            for z in range(1, len(play[player])):
                 item = play[player][z][0][0]
                 if item in ['Ace', 'Ace1', 'Ace11']:
-                    is_ace(player, play[player], j, item)
+                    print(config.Messages.BUSTED_C_TXT.format(attr(5), fg(15),
+                                                              bg(160), player,
+                                                              play[player][j-1][1],
+                                                              attr(0)))
+
+                    print_hand(player, 'Print_Sum')
+
+                    break
+                    is_ace(player, play[player], z, item)
+                    play[player][0] = sum_up(player, play[player])
                     continue
 
             # update the bet of the new round as the previous one
             play[player][j][1] = play[player][j-1][1]
             play[player][j][2] = 'Bust'
-            print(config.Messages.BUSTED_TXT.format(player,
+            # print the message as the busted hand
+            print(config.Messages.BUSTED_TXT.format(attr(1), attr(5), fg(1),
+                                                    bg(15), player,
                                                     play[player][j][1]))
+            print_hand(player, 'Print_Sum')
             break
+
+        # print the value of each card + the sum of them
+        print(config.Messages.CARD_DETAILS_TXT3.format(fg(3), bg(234),
+                                                       player, j, attr(0)))
+        for i in range(1, sorted(play[player].keys())[-1] + 1):
+            deck.print_card(play[player][i][0], 'Print')
+        deck.print_sum(play[player][0])
 
         j += 1
 
-    print('\nplay_full_hand:\n',play)
-    print('\n\n====================================================\n\n')
+    print('\n<<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>>')
+    print(config.Messages.CARD_DETAILS_TXT5.format(fg(3), bg(234),
+                                                   player, attr(0)))
+    print_hand(player, 'Print_Sum')
+    print('<<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>><<>>\n')
 
 
-deck.deck = [['Two', 'Club'], ['Two', 'Heart'], ['Two', 'Spade'], ['Ace', 'Heart'], ['Ace', 'Diamond'], ['Ace', 'Club'], ['Ace', 'Spade'], ['Two', 'Diamond'], ['Ten', 'Heart'], ['Ten', 'Diamond'], ['Ten', 'Club'], ['Ten', 'Spade']]
-print(deck.deck)
+player = players.players_name
 
 # get the first card
-for i in range(0, len(players.players_name)):
-    player = players.players_name[i]
-    play[player] = {'sum': 0, 1: [deck.deck.pop(), 0, 'Hit']}
-    is_ace(player, play[player], 1, 'Ace')
-    play[player]['sum'] = sum_up(player, play[player])
+for name in player:
+    play[name] = {0: 0, 1: [deck.deck.pop(), 0, 'Hit']}
+    is_ace(player, play[name], 1, 'Ace')
+    play[name][0] = sum_up(name, play[name])
 
-# place the initial bet
-for i in range(1, len(players.players_name)):
-    player = players.players_name[i]
-    play[player][1][1] = bet(player, 0)
+# place the initial bet; except for the Dealer
+print(config.Messages.CARD_DETAILS_TXT1.format(fg(3), bg(234), name, attr(0)))
 
-print('\n\n============= First Hand ==============\n', play)
+# print the initial hand of each player and ask for the first bet
+for i in range(1, len(player)):
+    print_hand(player[i], None)
+    play[player[i]][1][1] = bet(player[i], 0)
 
-temp = players.players_name.copy()
-temp.remove('Dealer')
+# create a temporary array which helps with splited hands
+temp1 = player.copy()
+temp1.remove('Dealer')
 
-while temp:
-    print('\n================\n{}\n====================\n'.format(play))
-    print(temp[0])
-    play_game(temp[0], 2, 'init')
-    temp.remove(temp[0])
+while temp1:
+    play_game(temp1[0], 2, 'init')
+    temp1.remove(temp1[0])
 
 # remove the duplicated names
-for item in players.players_name:
+for item in player:
     if item[-3:-1] == '__':
-        players.players_name.remove(item[:-3])
+        player.remove(item[:-3])
 
 # calculate the final results
-results = {}
-for item in players.players_name:
-    results[item] = play[item]['sum']
-
-print('\n\n============= Last Hand ==============\n', play)
+# results = {}
+# for item in player:
+#     results[item] = play[item][0]
 
 
 """ sort the list based on the values and checks if any is less than 21.
     it means that there is at least a player who has not busted.
 """
-names = players.players_name
-if any(play[names[i]]['sum'] <= 21 for i in range(1, len(names))):
+if any(play[player[i]][0] <= 21 for i in range(1, len(player))):
     play_game('Dealer', 2, 'play')
-    results['Dealer'] = play['Dealer']['sum']
+    print_statistics(player, 'Check')
 
-    results = sorted(results.items(), key=lambda x: x[1])
-
-    for i in range(0, len(results)):
-        if results[i][1] > 21:
-            results.pop(i)
-
-    j = 1
-    for i in range(len(results)-1, -1, -1):
-        print('The winner no. {} is {}'.format(j, results[-1][0]))
-        if results[-1][0] != 'Dealer':
-            continue
-        else:
-            print('Others lost the game')
-            break
-        j += 1
 else:
-    print('Dealer is the winner')
+    print_statistics(player, 'All_Busted')

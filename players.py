@@ -17,15 +17,17 @@ players_name = ['Dealer']
 
 # get the name of players
 for i in range(1, players_number + 1):
-    player_name = str(input('{}{} !!Dealer! Please enter the name '
-                            'of player no.{}{} {} {}: '
-                            .format(fg(1), bg(15), i, fg(2), bg(5), attr(0))))
+
+    player_name = str(input(config.Messages.PLAYER_NAME_TXT
+                            .format(fg(31), bg(234), i, attr(0))))
     while True:
         if player_name in players_name:
-            player_name = str(input('Duplicated name; try again!\n\t'))
+            player_name = str(input(config.Messages.PLAYER_NAME_ERROR_TXT1
+                                    .format(fg(1), bg(15),
+                                            player_name, attr(0))))
         elif player_name[-3:-1] == '__':
-            player_name = str(input('"__" at the end of the name is not '
-                                    'acceptable; try again!\n\t'))
+            player_name = str(input(config.Messages.PLAYER_NAME_ERROR_TXT2
+                                    .format(fg(1), bg(15), attr(0))))
         else:
             break
     players_name.append(player_name)
