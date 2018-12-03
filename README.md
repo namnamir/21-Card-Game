@@ -43,9 +43,10 @@ After setting the initial bet, each player will start the game. They will get ca
 - If the Dealer gets Busted, all players who are not Busted are the winners. For example, if sum-of-cards of `Player_1 = 18`, `Player_2 = 22`, `Player_3 = 10` and `Dealer = 25` then the winner are `Player_1` and `Player_3`.
 
 # Screenshots
+Here are some screenshots of the game:
 ![alt Welcome Message 21](https://raw.githubusercontent.com/namnamir/21-Card-Game/master/screenshots/Screenshot1.png)
-![alt Welcome Message 21](https://raw.githubusercontent.com/namnamir/21-Card-Game/master/screenshots/Screenshot2.png)
-![alt Welcome Message 21](https://raw.githubusercontent.com/namnamir/21-Card-Game/master/screenshots/Screenshot3.png)
-![alt Welcome Message 21](https://raw.githubusercontent.com/namnamir/21-Card-Game/master/screenshots/Screenshot4.png)
-![alt Welcome Message 21](https://raw.githubusercontent.com/namnamir/21-Card-Game/master/screenshots/Screenshot5.png)
-![alt Welcome Message 21](https://raw.githubusercontent.com/namnamir/21-Card-Game/master/screenshots/Screenshot6.png)
+![alt Hitting & Standing](https://raw.githubusercontent.com/namnamir/21-Card-Game/master/screenshots/Screenshot2.png)
+![alt Chance to Reassign the Value of Ace](https://raw.githubusercontent.com/namnamir/21-Card-Game/master/screenshots/Screenshot3.png)
+![alt Statistical Table](https://raw.githubusercontent.com/namnamir/21-Card-Game/master/screenshots/Screenshot4.png)
+![alt Duplicated Names](https://raw.githubusercontent.com/namnamir/21-Card-Game/master/screenshots/Screenshot5.png)
+![alt Busted Hand](https://raw.githubusercontent.com/namnamir/21-Card-Game/master/screenshots/Screenshot6.png)
