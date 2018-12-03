@@ -43,10 +43,41 @@ After setting the initial bet, each player will start the game. They will get ca
 - If the Dealer gets Busted, all players who are not Busted are the winners. For example, if sum-of-cards of `Player_1 = 18`, `Player_2 = 22`, `Player_3 = 10` and `Dealer = 25` then the winner are `Player_1` and `Player_3`.
 
 # Screenshots
-Here are some screenshots of the game:
+Here are some screenshots of the game:<br>
+
 ![alt Welcome Message 21](https://raw.githubusercontent.com/namnamir/21-Card-Game/master/screenshots/Screenshot1.png)
 ![alt Hitting & Standing](https://raw.githubusercontent.com/namnamir/21-Card-Game/master/screenshots/Screenshot2.png)
 ![alt Chance to Reassign the Value of Ace](https://raw.githubusercontent.com/namnamir/21-Card-Game/master/screenshots/Screenshot3.png)
 ![alt Statistical Table](https://raw.githubusercontent.com/namnamir/21-Card-Game/master/screenshots/Screenshot4.png)
 ![alt Duplicated Names](https://raw.githubusercontent.com/namnamir/21-Card-Game/master/screenshots/Screenshot5.png)
 ![alt Busted Hand](https://raw.githubusercontent.com/namnamir/21-Card-Game/master/screenshots/Screenshot6.png)
+
+<div class="w3-content w3-display-container">
+  <img class="mySlides" src="img_snowtops.jpg" style="width:100%">
+  <img class="mySlides" src="img_lights.jpg" style="width:100%">
+  <img class="mySlides" src="img_mountains.jpg" style="width:100%">
+  <img class="mySlides" src="img_forest.jpg" style="width:100%">
+
+  <button class="w3-button w3-black w3-display-left" onclick="plusDivs(-1)">&#10094;</button>
+  <button class="w3-button w3-black w3-display-right" onclick="plusDivs(1)">&#10095;</button>
+</div>
+
+<script>
+var slideIndex = 1;
+showDivs(slideIndex);
+
+function plusDivs(n) {
+  showDivs(slideIndex += n);
+}
+
+function showDivs(n) {
+  var i;
+  var x = document.getElementsByClassName("mySlides");
+  if (n > x.length) {slideIndex = 1}    
+  if (n < 1) {slideIndex = x.length}
+  for (i = 0; i < x.length; i++) {
+     x[i].style.display = "none";  
+  }
+  x[slideIndex-1].style.display = "block";  
+}
+</script>
