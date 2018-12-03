@@ -45,11 +45,9 @@ The game starts by giving a card to everybody (all players and the Dealer), star
 # Screenshots
 Here are some screenshots of the game:<br>
 
-<div style="text-align: center;">
 ![alt Welcome Message 21](https://raw.githubusercontent.com/namnamir/21-Card-Game/master/screenshots/Screenshot1.png)
 ![alt Hitting & Standing](https://raw.githubusercontent.com/namnamir/21-Card-Game/master/screenshots/Screenshot2.png)
 ![alt Chance to Reassign the Value of Ace](https://raw.githubusercontent.com/namnamir/21-Card-Game/master/screenshots/Screenshot3.png)
 ![alt Statistical Table](https://raw.githubusercontent.com/namnamir/21-Card-Game/master/screenshots/Screenshot4.png)
 ![alt Duplicated Names](https://raw.githubusercontent.com/namnamir/21-Card-Game/master/screenshots/Screenshot5.png)
 ![alt Busted Hand](https://raw.githubusercontent.com/namnamir/21-Card-Game/master/screenshots/Screenshot6.png)
-</div>
