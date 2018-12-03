@@ -1,6 +1,6 @@
 It is a try to simulate 21 Card Game (similar to Blackjack) in the terminal (command line) by a code written in Python 3.
 
-# Requirements:
+# Requirements & Install
 - Python 3.x
 - Python libraries which are listed in `requtrements.txt`. You only need to run `pip3 requrements.txt`.
 
@@ -17,7 +17,7 @@ The game starts by giving a card to everybody (all players and the Dealer), star
 
 # The rules
 
-## Basic Rules
+## Basic rules
 - Deck of cards consists of 52 cards in 4 suits (`♠`, `♥`, `♦` and `♣`) and 13 ranks (Ace, 2 to 10, Jack, Queen, and King).
 - Each deck of cards is for max 3 players. For example, if there are 4 players then 2 decks (104 cards) are needed.
 - The deck(s) should be shuffled before starting the game.
@@ -30,13 +30,13 @@ The game starts by giving a card to everybody (all players and the Dealer), star
 - If the first 2 cards of a player are the same, the player can Split her hand into two hands and play as she is 2 players. In this case, `__1` and `__2` will be added to her name and the bet will be divided (modulus) by 2. For example, if the name of the player is `Jila` and she has `10♠` and `10♥` as her first two cards then she can split her hand (her initial bet is 4). Her name will be changed to `Jila__1` and `Jilla__2` and the initial bet for each will be 2 (`4%2=2`). If the initial bet is 3 then the bet of each hand will be 1 (`3%2=1`).
 - After the second card, it is not possible to split the hand. For example, if the player has the hand of `2♠`, `5♥`, `5♦`, she can't split her hand because the first 2 cards are not the same; also, if she has `5♠`, `5♥`, `2♦` she still can't split her hand because she has the 3rd card in her hand.
 - The Dealer can't split her hand.
-## Hit and Stand
+## Hit & Stand
 - After each card (from the second card to the end), the player can choose between Hit and Stand. Hit means requesting another card and Stand means finish with cards and pass the game to other players.
 - Nobody can Hit if the sum-of-cards is greater than 21 (`sum of cards > 21`) unless she has Ace in her hand and is willing the reduce the value of the Ace to 1.
 - The Dealer needs to Hit if sum-of-cards is less or equals to 16 (`sum of cards =< 16`) and Stand if sum-of-cars is greater or equals to 17 (`sum of cards >= 17`). For example, if the Dealer has the hand `2♠`, `5♥`, `5♦` and `4♣` (=16), she has to Hit (even if she is sure the next card will be `10♣` that causes her to lose the game) but if she has the hand `6♠`, `4♠`, `3♥` and `5♦` (=18), she has to Stand (even if she is sure the next card will be `3♦` that causes her to win the game).
 ## Blackjack (21)
 - If the player reaches 21 in the second hand (i.e. gets a 10 as the first card and an Ace as the second card) then she will be the winner if the Dealer can't reach 21. If the Dealer reaches 21, then the Dealer is the winner.
-## Winner
+## The winner
 - If all players get Busted, then the winner is the Dealer (Bank).
 - If the sum-of-cards of the Dealer equal to the highest sum-of-cards of players, then the Dealer wins. For example, if the sum-of-cards of `Player_1 = 18`, `Player_3 = 18` and `Dealer = 18` then the winner is the `Dealer` and others are lost.
 - If more than one player has the condition of being the winner, then all are the winners. For example, if the sum-of-cards of `Player_1 = 18`, `Player_3 = 18` and `Dealer = 15` then the winners are `Player_1` and `Player_3`.
